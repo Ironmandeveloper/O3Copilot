@@ -1,0 +1,121 @@
+Prod_Values_Prompt_Engg_Template: |
+  answer the question based on the following context and information.
+  entities = [plant,line,unit]
+  intents = [availability,capacity utilization,quality,overall equipment effectiveness,oee,performance,waste]
+  plant_entitynames = [olp,opf,opi,otf,orp,ocp,ots,ogc,off],
+  line_entitynames = [assembly,assembly-osc-osd,binding,caps,cbob-caps,coating,cutting,design,diemaking,eai,electrical,flexo,hdpe,inspection,krones,lamination,mechanical,moulding,ome,operational,packaging-osc-osd,planning,preforms,prepress,printing,quality,quality-checklist,roto,safety,sales,sheeter,shipping,slitting,sorting,stripping,tubeline,utilities,utilitiesfilm,utilitiesflex,utility,warehouse,warping,wearhouse,weaving,workshop,availability,availability-checklist,waste,waste-checklist]
+  unit_entitynames = [ahu01,ahu02,ahu03,ahu04,ahu05,ahu06,ahu-1,ahu-10,ahu-11,ahu-2,ahu-3,ahu-4,ahu-5,ahu-6,ahu-7,ahu-8,ahu-9,alkaline,ashe,asitrade,assembly-01,assembly-02,bag,bhs,breyer,cbob-osc,cbob-osd,cdi,cfm-2,cfm-3,chm,chrome,comexi,copper-4,copper-5,core,corrugated,creasing,ctp,cylinder,daiten,dcm,dechrome,degreasing-2,degreasing-3,design,diemaking,eai,engraving-1,engraving-2,engraving-3,erector,er-we-pa,exposure-1,exposure-2,forklift,glue,gma-2,gma-3,gma-4,gma-5,heidelberg,hocker,hpx,hugobeck-1,hugobeck-2,husky-1,husky-2,im_03,im_04,im_05,im_07,im_08,im_09,im_10,im_11,im_12,im_13,jkampf,kba-105,kba-a,kba-b,kba-c,kba-x,krones1,krones2,krones3,krones4,krones5,krones6,label,lining,lithoman-1,lithoman-2,long-ming,mbo-2,mbo-3,mechanical,menzel,misomex,nexus,ome,pallets,pasaban,pet001,pet002,pet003,pet004,plates,plc,pma,polar,proofing-1,proofing-2,proslit,quality-documents,renze,resin,rewinder-1,rewinder-2,robank,rotomec,sales,shipping,sleeve,sorting,spanex,spiral,stahl,stretch,tcx,techne-05,techne-06,techne-07,techne-08,techne-09,techne-11,techne-13,techne-15,techne-16,texa,tray,tubeline,txr,uniloy-01,uniloy-02,uniloy-03,uniloy-04,uteco,warehouse,washrooms,wearhouse,wireing,wohlenberg-1,wohlenberg-2,workshop,availability-documents,waste-documents]
+  guidelines:
+  -> you are not case sensitive
+  -> if query is out of context than return "entity":"unknown", "intent":"unknown", "entityname": "unknown","fromdate":"unknown","todate":"unknown".
+  -> oee stands for overall equipment effectiveness if query contains "overall equipment effectiveness" return "intent":"oee"
+  -> both "machine" and "unit" refers to entity "unit" so if query contains "machine" return "entity":"unit"
+  -> if the query lacks the entity, return "entity":"unknown".
+  -> if the query lacks the entitynames, return "entityname":"unknown".
+  -> if the query lacks entity from entities then determine the relevant entity from entitynames like olp is to plant and ahu-10 is to unit.
+  -> if the query is about best or worst then return intent like this "best/asked intent" or "worst/asked intent".
+  -> if the query contains both line & plant then return entity like "line/plant".
+  -> if the query contains both unit & plant then return entity like "unit/plant".
+  -> some entitynames are in both lineenitynames & unitenitynames i.e. "design,mechanical,warehouse, shipping, diemaking, eai, ome, sales,sorting, wearhouse, workshop", for all these, return entity label as"line/unit".
+  -> if the query lacks plant_entitynames then return entityname as "unknown" like "please tell me which unit has best capacity utilization in plant" he was asking about unit so unit would be all and plant name not mentioned so "entityname" would be "all/unknown".
+  -> if the query have some spell mistake in english words, then correct the spelling mistake.
+  -> if the query is about what is the oee or any intent then module=productivityy if query is about why oee or any intent reduces then module=diagnostic
+  -> if you find any single valid date in query please convert it into yyyy-mm-dd hh:mm:ss format and return as "fromdate"
+  -> if you find two valid dates in query please convert these to yyyy-mm-dd hh:mm:ss format and return as "fromdate" and "todate"
+  examples:
+  -> "query":"among all the lines, which one is having best waste in orp" this can be labeled as: "entity":"line/plant", "intent":"best/waste", "entityname": "all/orp","module": "productivityy".
+  -> "query":"among the lines, which one is having worst quality in off" can be labeled as: "entity":"line/plant", "intent":"worst/quality", "entityname": "all/off","module": "productivityy".
+  -> "query":"please provide the name of plant having optimal performance" can be labeled as: "entity":"plant", "intent":"best/performance", "entityname": "all","module": "productivityy".
+  -> "query":"among all the lines, which one is having worst oee" this can be labeled as: "entity":"line", "intent":"worst/oee", "entityname": "all","module": "productivityy".
+  -> "query":"why oee of plant opf reduced" this can be labeled as: "entity":"plant", "intent":"oee", "entityname": "opf","module": "diagnostic".
+  strictly format the output as json with the following keys:
+  entity, entityname, intent, fromdate, todate,module
+  question: {query}
+  answer:
+
+Prod_Graph_Prompt_Engg_Template: |
+  answer the question based on the following context and information.
+  entities = [plant,line,unit]
+  intents = [availability,capacity utilization,quality,overall equipment effectiveness,oee,performance,waste]
+  plant_entitynames = [olp,opf,opi,otf,orp,ocp,ots,ogc,off],
+  line_entitynames = [assembly,assembly-osc-osd,binding,caps,cbob-caps,coating,cutting,design,diemaking,eai,electrical,flexo,hdpe,inspection,krones,lamination,mechanical,moulding,ome,operational,packaging-osc-osd,planning,preforms,prepress,printing,quality,quality-checklist,roto,safety,sales,sheeter,shipping,slitting,sorting,stripping,tubeline,utilities,utilitiesfilm,utilitiesflex,utility,warehouse,warping,wearhouse,weaving,workshop,availability,availability-checklist,waste,waste-checklist]
+  unit_entitynames = [ahu01,ahu02,ahu03,ahu04,ahu05,ahu06,ahu-1,ahu-10,ahu-11,ahu-2,ahu-3,ahu-4,ahu-5,ahu-6,ahu-7,ahu-8,ahu-9,alkaline,ashe,asitrade,assembly-01,assembly-02,bag,bhs,breyer,cbob-osc,cbob-osd,cdi,cfm-2,cfm-3,chm,chrome,comexi,copper-4,copper-5,core,corrugated,creasing,ctp,cylinder,daiten,dcm,dechrome,degreasing-2,degreasing-3,design,diemaking,eai,engraving-1,engraving-2,engraving-3,erector,er-we-pa,exposure-1,exposure-2,forklift,glue,gma-2,gma-3,gma-4,gma-5,heidelberg,hocker,hpx,hugobeck-1,hugobeck-2,husky-1,husky-2,im_03,im_04,im_05,im_07,im_08,im_09,im_10,im_11,im_12,im_13,jkampf,kba-105,kba-a,kba-b,kba-c,kba-x,krones1,krones2,krones3,krones4,krones5,krones6,label,lining,lithoman-1,lithoman-2,long-ming,mbo-2,mbo-3,mechanical,menzel,misomex,nexus,ome,pallets,pasaban,pet001,pet002,pet003,pet004,plates,plc,pma,polar,proofing-1,proofing-2,proslit,quality-documents,renze,resin,rewinder-1,rewinder-2,robank,rotomec,sales,shipping,sleeve,sorting,spanex,spiral,stahl,stretch,tcx,techne-05,techne-06,techne-07,techne-08,techne-09,techne-11,techne-13,techne-15,techne-16,texa,tray,tubeline,txr,uniloy-01,uniloy-02,uniloy-03,uniloy-04,uteco,warehouse,washrooms,wearhouse,wireing,wohlenberg-1,wohlenberg-2,workshop,availability-documents,waste-documents]
+  guidelines:
+  -> oee stands for overall equipment effectiveness if query contains "overall equipment effectiveness" return "intent":"oee"
+  -> both "machine" and "unit" refers to entity "unit" so if query contains "machine" return "entity":"unit"
+  -> if the query lacks the entity, return "entity":"unknown".
+  -> if the query lacks the entitynames, return "entityname":"unknown".
+  -> if the query lacks entity from entities then determine the relevant entity from entitynames like olp is to plant and ahu-10 is to unit.
+  -> if the query is about best or worst then return intent like this "best/asked intent" or "worst/asked intent".
+  -> if the query contains both line & plant then return entity like "line/plant".
+  -> if the query contains both unit & plant then return entity like "unit/plant".
+  -> Always return intents separated by "/".
+
+  -> some entitynames are in both line_entitynames & unitenitynames i.e. "design,mechanical,warehouse, shipping, diemaking, eai, ome, sales,sorting, wearhouse, workshop", for all these, return entity label as"line/unit".
+  -> if the query lacks plant_entitynames then return entityname as "unknown" like "please tell me which unit has best capacity utilization in plant" he was asking about unit so unit would be all and plant name not mentioned so "entityname" would be "all/unknown".
+  -> if the query have some spell mistake in english words, then correct the spelling mistake.
+  -> if the query contains top 5 or top 10 then entityname should be "all/askedentityname"
+  -> if you find any single valid date in query please convert it into yyyy-mm-dd hh:mm:ss format and return as "fromdate"
+  -> if you find two valid dates in query please convert these to yyyy-mm-dd hh:mm:ss format and return as "fromdate" and "todate"
+  -> if the query contains "graph" or "chart"or plot or show me or display or trend, set "chart_type" default to "bar". if it contains "list", set "list" to 5. if neither are present, "chart_type" is none and "list" is 5.
+  -> if the query contains both graph or chart or plot and table then return type as "chart/list" and chart type as "bar" or asked.
+  examples:
+  -> "query":"show me among all the lines, which one is having best waste in orp" this can be labeled as: "entity":"line/plant", "intent":"best/waste", "entityname": "all/orp","type":"chart",  "chart_type":"bar","list":5.
+  -> "query":"display list which one is having worst quality in off" can be labeled as: "entity":"line/plant", "intent":"worst/quality", "entityname": "all/off","type":"list", "chart_type":"list","list":5.
+  -> "query":"please provide the plot of plant having optimal performance" can be labeled as: "entity":"plant", "intent":"best/performance", "entityname": "all", "type":"chart", "chart_type":"bar","list":5.
+  -> "query":"i want the chart of oee,availability,performance and quality for plant orp from 25 july 2023 to 26 july 2023" this can be labeled as: "entity":"plant", "intent":"oee/availability/performance/quality", "entityname": "orp","type":"chart", "chart_type":"bar","list":5.
+  -> "query":"show the graph of capacity utilization of assembly,assembly-osc-osd,binding line in ocp plant" can be labeled as: "entity":"line/plant", "intent":"best/capacity utilization", "entityname": "assembly,assembly-osc-osd,binding/ocp","type":"chart",  "chart_type": bar, "list": 5.
+  -> "query":"show the line graph of capacity utilization of unit ahu01, ahu02, ahu03 in line sorting?" can be labeled as: "entity":"unit/line", "intent":"capacity utilization", "entityname": "ahu01,ahu02,ahu03/sorting","type":"chart",  "chart_type": line, "list": 5.
+  -> "query":"plot a pie chart showing the capacity utilization trend for ahu01, ahu02, ahu03 in the ocp plant." can be labeled as: "entity":"unit/plant", "intent":"capacity utilization", "entityname": "ahu01,ahu02,ahu03/ocp","type":"chart",  "chart_type": "pie", "list": 5.
+  -> "query":"give me the table of top 5 lines having best oee in orp plant from 8:10:27pm 7 october 2023 to 9:23:50am 8 october 2023" can be labeled as: "entity":"line/plant", "intent":"oee", "entityname": "all/orp","type":"list", "chart_type": "list", "list": 5.
+  strictly format the output as json with the following keys:
+  entity, entityname, intent, fromdate, todate, chart_type, list, type
+  question:{query}
+  answer:
+
+
+KPI_Combine_prompt: |
+  answer the question based on the following context and information.
+  entities = [plant,line,unit]
+  target_intents = [target value,actual value,gap analysis,analysis, comparison]
+  action_paln_inents = [closed,open,complete,reopened,delay,delayed,inprogress]
+  raci_intents = [raci,responsible,accountable,consulted,informed]
+
+  plant_entitynames = [olp,opf,opi,otf,orp,ocp,ots,ogc,off],
+  line_entitynames = [assembly,assembly-osc-osd,binding,caps,cbob-caps,coating,cutting,design,diemaking,eai,electrical,flexo,hdpe,inspection,krones,lamination,mechanical,moulding,ome,operational,packaging-osc-osd,planning,preforms,prepress,printing,quality,quality-checklist,roto,safety,sales,sheeter,shipping,slitting,sorting,stripping,tubeline,utilities,utilitiesfilm,utilitiesflex,utility,warehouse,warping,wearhouse,weaving,workshop,availability,availability-checklist,waste,waste-checklist]
+  unit_entitynames = [ahu01,ahu02,ahu03,ahu04,ahu05,ahu06,ahu-1,ahu-10,ahu-11,ahu-2,ahu-3,ahu-4,ahu-5,ahu-6,ahu-7,ahu-8,ahu-9,alkaline,ashe,asitrade,assembly-01,assembly-02,bag,bhs,breyer,cbob-osc,cbob-osd,cdi,cfm-2,cfm-3,chm,chrome,comexi,copper-4,copper-5,core,corrugated,creasing,ctp,cylinder,daiten,dcm,dechrome,degreasing-2,degreasing-3,design,diemaking,eai,engraving-1,engraving-2,engraving-3,erector,er-we-pa,exposure-1,exposure-2,forklift,glue,gma-2,gma-3,gma-4,gma-5,heidelberg,hocker,hpx,hugobeck-1,hugobeck-2,husky-1,husky-2,im_03,im_04,im_05,im_07,im_08,im_09,im_10,im_11,im_12,im_13,jkampf,kba-105,kba-a,kba-b,kba-c,kba-x,krones1,krones2,krones3,krones4,krones5,krones6,label,lining,lithoman-1,lithoman-2,long-ming,mbo-2,mbo-3,mechanical,menzel,misomex,nexus,ome,pallets,pasaban,pet001,pet002,pet003,pet004,plates,plc,pma,polar,proofing-1,proofing-2,proslit,quality-documents,renze,resin,rewinder-1,rewinder-2,robank,rotomec,sales,shipping,sleeve,sorting,spanex,spiral,stahl,stretch,tcx,techne-05,techne-06,techne-07,techne-08,techne-09,techne-11,techne-13,techne-15,techne-16,texa,tray,tubeline,txr,uniloy-01,uniloy-02,uniloy-03,uniloy-04,uteco,warehouse,washrooms,wearhouse,wireing,wohlenberg-1,wohlenberg-2,workshop,availability-documents,waste-documents]
+  ​
+  guidelines:
+  -> oee stands for overall equipment effectiveness if query contains "overall equipment effectiveness" return "intent":"oee"
+  -> both "machine" and "unit" refers to entity "unit" so if query contains "machine" return "entity":"unit"
+  -> if the query lacks the entity, return "entity":"unknown".
+  -> if the query lacks the entitynames, return "entityname":"unknown".
+  -> if the query lacks entity from entities then determine the relevant entity from entitynames like olp is to plant and ahu-10 is to unit.
+  -> if the query is about best or worst then return intent like this "best/asked intent" or "worst/asked intent".
+  -> if the query contains both line & plant then return entity like "line/plant".
+  -> if the query contains both unit & plant then return entity like "unit/plant".
+  -> some entitynames are in both lineenitynames & unitenitynames i.e. "design,mechanical,warehouse, shipping, diemaking, eai, ome, sales,sorting, wearhouse, workshop", for all these, return entity label as"line/unit".
+  -> if the query lacks plant_entitynames then return entityname as "unknown" like "please tell me which unit has best capacity utilization in plant" he was asking about unit so unit would be all and plant name not mentioned so "entityname" would be "all/unknown".
+  -> if the query have some spell mistake in english words, then correct the spelling mistake.
+  -> if you find any single valid date in query please convert it into yyyy-mm-dd hh:mm:ss format and return as "fromdate".
+  -> if you find two valid dates in query please convert these to yyyy-mm-dd hh:mm:ss format and return as "fromdate" and "todate".
+  -> if you find any name or code after 'actual,target,kpi,gap analysis of' consider it kpi name.if both kpiname will be "name/code.
+  -> if the query starts with "what is the kpi of...", consider it as an inquiry about the kpi's actual value or target value.and intent wil be "actual/target".
+  -> if you find actual value or target value consider "intent":"actual value" or "target value".
+  -> if the query lacks frequency, return "frequency":"none".
+  -> if the query is about target_intents "module":"kpi" and if it's about action_paln_inents then "module":"kpi_act_plan", and if it's about raci_intents then "module":"kpi_raci".
+  -> if the query is asking about chart or graph or similiar then return "type":"chart", if it's about table list or similiar then return "type":"list"else "type":"text".
+  -> if chart or graph is mentioned with raci then type always will be list.
+  -> if the query mentioned chart type then gives as "chart_type":"bar" or "asked type" default type is bar if query did not contain any chart type.
+  -> if the query constains only analysis/comparison or comaprison like what is the analysis of kpi k881ac, then return "analysis/comparison" in "intent" and in chart_type "analysis/comaprison" and type "chart/list".
+  examples:
+  -> "query":"what is the kpi of no. of major breakdown of line assembly and unit robank at 20 july 2023 at frequency monthly?" can be labeled as:"entity":"line/unit","entityname":"assemblyrobank","intent":"actual value/target value","module":"kpi","type":"text","chart_type":"","fromdate": "2023-07-20 00:00:00","todate": "2023-08-20 00:00:00","kpiname": "no. of major breakdown","frequency": "monthly".
+  -> "query":"display the table of responsible and accountable and informed of  k881ac of line assembly and unit robank from 20 july 2022 to september 2023 with frequency of shiftly?" can be labeled as:"entity": "line/unit", "entityname": "assembly/robank", "intent": "responsible/accountable/informed","module":"kpi_raci","type":"list","chart_type":"", "fromdate": "2022-07-20 00:00:00", "todate": "2023-09-30 00:00:00", "kpiname": "k881ac","frequency": "shiftly".
+  -> "query":"what is the closed and open action plan of labor: sheets/fte lamination (k76c5a) of unit krines1 and krones2 from july 2023 to september 2023 with frequency daily?" can be labled as:"entity": "unit", "entityname": " krones1,krones2", "intent": "closed/open","module":"kpi_act_plan","type":"text","chart_type":"", "fromdate": "2023-07-01 00:00:00", "todate": "2023-09-30 00:00:00", "kpiname": "labor: sheets/fte lamination,k76c5a", "frequency": "daily".
+  -> "query":"give me the raci matrix of k76c5a of unit krines1 and krones2 from july 2023 to september 2023 with frequency daily?" can be labled as:"entity": "unit", "entityname": " krones1,krones2", "intent": "raci","module":"kpi_raci","type":"text","chart_type":"", "fromdate": "2023-07-01 00:00:00", "todate": "2023-09-30 00:00:00", "kpiname": "k76c5a", "frequency": "daily".
+  -> "query":"give me the chart of analysis of kpi CCRs and #CCR in plant 'demo plant' from 3 jan 2020 to 3 april 2023 at yearly frequency?" can be labeled as: :"entity": "plant", "entityname": " demo plant", "intent": "analysis","module":"kpi","type":"chart","chart_type":"analysis", "fromdate": "2020-01-03 00:00:00", "todate": "2023-04-03 00:00:00", "kpiname": "CCRs/#CCR", "frequency": "yearly".
+
+  strictly format the output as json with the following keys:
+  entity, entityname, intent, fromdate, todate, kpiname, frequency, module, type, chart_type
+  question: {query}
+  answer:
