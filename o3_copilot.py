@@ -87,7 +87,7 @@ class O3Copilot(ResponseValidator, DataRetriever):
         if payload_type == 'text':
             payload['type'] = 'text'
         elif payload_module == 'productivity':
-            payload['module'] = 'productivityy'
+            payload['module'] = 'productivity'
         return self.retrieve_data_from_database(classifier_classes, payload)
 
     def call_prod_values_api(self):

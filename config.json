@@ -1,6 +1,6 @@
 {
     "BOT_NAME":"O3 Copilot",
     "GET_CHAT_HISTORY_URL": "https://o3-uat-bot-api.azurewebsites.net/api/ProductivityLLM/GetChatHistory",
-    "RETRIEVE_DATA_URL": "https://o3-stage-api.azurewebsites.net/api/ProductivityLLM/LLMChatBot",
+    "RETRIEVE_DATA_URL": "https://liveapi.o3manufacturing.com/api/ProductivityLLM/LLMChatBot",
     "SAVE_CHAT_HISTORY_URL": "https://o3-uat-bot-api.azurewebsites.net/api/ProductivityLLM/SaveChatHistory"
 }
