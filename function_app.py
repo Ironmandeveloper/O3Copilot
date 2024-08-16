@@ -62,7 +62,7 @@ def handle_post_request(req, db_tool_class):
     Args:
         req (func.HttpRequest): HTTP request object.
         db_tool_class (class): Database tool class for query interpretation.
-
+ 
     Returns:
         func.HttpResponse: HTTP response object.
     """
